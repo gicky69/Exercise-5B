@@ -1,3 +1,5 @@
+package src;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -15,6 +17,13 @@ public class MapPanel {
         };
         MapPanel.setBounds(0, 0, 1280, 720/2);
         MapPanel.setBackground(Color.GRAY);
+
+        MapPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                addNode(e.getX(), e.getY());
+            }
+        });
     }
 
     public void addNode(int x, int y){
@@ -22,6 +31,7 @@ public class MapPanel {
         Graphics g = MapPanel.getGraphics();
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.RED);
+        g2d.fillOval(x, y, 10, 10);
         MapPanel.repaint();
     }
 }

@@ -1,10 +1,13 @@
+package src;
+
 import javax.swing.*;
 
 
-public class Main {
+public class Main implements Runnable {
     JFrame MainFrame;
     MapPanel MapPanel;
     ControlPanel ControlPanel;
+    Thread MainThread;
 
 
     public Main(){
@@ -21,9 +24,30 @@ public class Main {
 
         MainFrame.add(MapPanel.MapPanel);
         MainFrame.add(ControlPanel.ControlPanel);
+        MainFrame.setFocusableWindowState(true);
+
+        start();
+    }
+
+    public void start() {
+        MainThread = new Thread(this);
+        MainThread.start();
+    }
+
+    public void run() {
+        while (true){
+            MainFrame.revalidate();
+            MainFrame.repaint();
+
+            try {
+                Thread.sleep(1000/60);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void main(String[] args) {
-        new Main();
+            new Main();
     }
 }
