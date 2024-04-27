@@ -8,14 +8,15 @@ public class Main implements Runnable {
     MapPanel MapPanel;
     ControlPanel ControlPanel;
     Thread MainThread;
+    int Width = 1680;
+    int Height = 720;
 
 
     public Main(){
         MainFrame = new JFrame("Exercise 5B");
-        MapPanel = new MapPanel();
-        ControlPanel = new ControlPanel(MapPanel);
-
-        MainFrame.setSize(1280, 720);
+        MapPanel = new MapPanel(Width, Height, this);
+        ControlPanel = new ControlPanel(Width, Height, MapPanel, this);
+        MainFrame.setSize(1680, 720);
         MainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         MainFrame.setLayout(null);
 
