@@ -3,7 +3,7 @@
 //
 //public class Graph {
 //
-//    ArrayList<LinkedList<Node>> adjlist;
+//    ArrayList<LinkedList <Node>> adjlist;
 //    ArrayList<LinkedList<Integer>> weightList;
 //
 //    Graph(){

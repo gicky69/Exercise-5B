@@ -3,6 +3,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 class Node {
     int x, y, diameter;
@@ -21,6 +23,10 @@ class Node {
 
 public class MapPanel extends JPanel {
     ArrayList<Node> nodes = new ArrayList<>();
+
+    ArrayList<LinkedList<Node>> adjList = new ArrayList<LinkedList<Node>>();
+    ArrayList<LinkedList<Integer>> weightList = new ArrayList<LinkedList<Integer>>();
+
     Node draggedNode = null;
 
     public MapPanel() {
@@ -32,6 +38,21 @@ public class MapPanel extends JPanel {
         nodes.add(new Node(400, 400, 90));
         nodes.add(new Node(1000, 300, 90));
         nodes.add(new Node(800, 50, 90));
+
+        for (int i = 0; i < nodes.size(); i++) {
+            LinkedList<Node> list = new LinkedList<Node>();
+            list.add(nodes.get(i));
+            adjList.add(list);
+            weightList.add(new LinkedList<Integer>());
+        }
+
+        AddWeight(0, 1);
+        AddWeight(1, 2);
+        AddWeight(2, 3);
+        AddWeight(1, 3);
+
+
+        print();
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
@@ -103,5 +124,32 @@ public class MapPanel extends JPanel {
         g2.drawLine(node3.x + node3.diameter / 2, node3.y + node3.diameter / 2, node4.x + node4.diameter / 2, node4.y + node4.diameter / 2);
         // Connect Node(1) to Node(3)
         g2.drawLine(node2.x + node2.diameter / 2, node2.y + node2.diameter / 2, node4.x + node4.diameter / 2, node4.y + node4.diameter / 2);
+
+        System.out.println("Road 1: " + (int) Math.sqrt(Math.pow(node2.x - node1.x, 2) + Math.pow(node2.y - node1.y, 2)));
+        System.out.println("Road 2: " + (int) Math.sqrt(Math.pow(node3.x - node2.x, 2) + Math.pow(node3.y - node2.y, 2)));
+        System.out.println("Road 3: " + (int) Math.sqrt(Math.pow(node4.x - node3.x, 2) + Math.pow(node4.y - node3.y, 2)));
+        System.out.println("Road 4: " + (int) Math.sqrt(Math.pow(node4.x - node2.x, 2) + Math.pow(node4.y - node2.y, 2)));
+    }
+
+    // A, B, C, D, E
+    public void AddWeight(int srcNode, int dstTo) {
+        Node node1 = nodes.get(srcNode);
+        Node node2 = nodes.get(dstTo);
+        int weight = (int) Math.sqrt(Math.pow(node2.x - node1.x, 2) + Math.pow(node2.y - node1.y, 2));
+
+        LinkedList<Node> list = adjList.get(srcNode);
+        list.add(node2);
+
+        LinkedList<Integer> weightList = this.weightList.get(srcNode);
+        weightList.add(weight);
+    }
+
+    public void print() {
+        for (LinkedList<Node> list : adjList) {
+            for (Node node : list) {
+                System.out.print(node + " -> ");
+            }
+            System.out.println();
+        }
     }
 }
