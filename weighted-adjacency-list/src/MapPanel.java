@@ -53,6 +53,7 @@ public class MapPanel extends JPanel {
 
 
         print();
+        DijkstraAlgo(0, 3);
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
@@ -151,5 +152,45 @@ public class MapPanel extends JPanel {
             }
             System.out.println();
         }
+    }
+
+    public void DijkstraAlgo(int src, int dst){
+        int[] dist = new int[nodes.size()];
+        int[] prev = new int[nodes.size()];
+        boolean[] visited = new boolean[nodes.size()];
+
+        for (int i=0;i<nodes.size();i++){
+            dist[i] = Integer.MAX_VALUE;
+            prev[i] = -1;
+            visited[i] = false;
+        }
+
+        dist[src] = 0;
+        Queue<Integer> path = new LinkedList<>();
+        path.add(src);
+
+        while (!path.isEmpty()) {
+            int u = path.poll();
+            visited[u] = true;
+
+            LinkedList<Node> list = adjList.get(u);
+            LinkedList<Integer> weightList = this.weightList.get(u);
+
+            System.out.println(list.size());
+            for (int i = 1; i < list.size(); i++) {
+                int weight = weightList.get(i);
+                Node node = list.get(i);
+                int v = nodes.indexOf(node);
+
+
+                if (!visited[v] && dist[v] > dist[u] + weight) {
+                    dist[v] = dist[u] + weight;
+                    prev[v] = u;
+                    path.add(v);
+                }
+            }
+        }
+
+        System.out.println("Shortest Path from " + src + " to " + dst + " is " + dist[dst]);
     }
 }
