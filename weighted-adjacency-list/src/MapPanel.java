@@ -240,6 +240,9 @@ public class MapPanel extends JPanel {
         weightList.get(j).add(weight);
     }
 
+
+
+    // daming nangyari hahahahahahahahahahah ohmahgah
     public void Dijkstra(int src, int dst) {
         int n = nodes.size();
         int[] dist = new int[n];
