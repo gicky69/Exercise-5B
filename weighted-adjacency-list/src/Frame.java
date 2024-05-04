@@ -9,6 +9,7 @@ public class Frame {
     JMenuBar menuBar;
     JMenu menu;
     JMenuItem addNode, connectNode, selectNode, deleteNode;
+    JButton Dijkstra;
 
     public Frame() {
         JFrame frame = new JFrame("MAP");
@@ -26,6 +27,12 @@ public class Frame {
         connectNode = new JMenuItem("Connect Node");
         selectNode = new JMenuItem("Select Node");
         deleteNode = new JMenuItem("Delete Node");
+        Dijkstra = new JButton("Dijkstra");
+
+        Dijkstra.setBounds(0, 0, 100, 50);
+        Dijkstra.setVisible(true);
+
+
         menu.add(addNode);
         menu.add(connectNode);
         menu.add(selectNode);
@@ -61,6 +68,14 @@ public class Frame {
             }
         });
 
+        Dijkstra.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mapPanel.Dijkstra(0, 5);
+            }
+        });
+
+        frame.add(Dijkstra);
         frame.add(mapPanel);
         frame.setVisible(true);
 

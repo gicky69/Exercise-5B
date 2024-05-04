@@ -2,17 +2,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
+import java.util.List;
 
 class Node {
     int x, y, diameter;
+    String name;
 
-    Node(int x, int y) {
+    Node(int x, int y, String n) {
         this.x = x;
         this.y = y;
         this.diameter = 90;
+        this.name = n;
     }
 
     public boolean isOver(Node node, int mx, int my) {
@@ -28,6 +29,8 @@ public class MapPanel extends JPanel {
     ArrayList<Node> nodes = new ArrayList<>();
     ArrayList<LinkedList<Node>> adjList = new ArrayList<LinkedList<Node>>();
     ArrayList<LinkedList<Integer>> weightList = new ArrayList<LinkedList<Integer>>();
+    Map<Node, List<Node>> connected = new HashMap<>();
+
     Node draggedNode = null;
     Node draggedNode2 = null;
     Mode mode = Mode.ADD_NODE;
@@ -43,33 +46,15 @@ public class MapPanel extends JPanel {
         this.setLayout(null);
         this.setVisible(true);
 
-//        nodes.add(new Node(100, 100));
-//        nodes.add(new Node(400, 400));
-//        nodes.add(new Node(1000, 300));
-//        nodes.add(new Node(800, 50));
-//
-//        for (int i = 0; i < nodes.size(); i++) {
-//            LinkedList<Node> list = new LinkedList<Node>();
-//            list.add(nodes.get(i));
-//            adjList.add(list);
-//            weightList.add(new LinkedList<Integer>());
-//        }
-//
-//        AddWeight(0, 1);
-//        AddWeight(1, 2);
-//        AddWeight(2, 3);
-//        AddWeight(1, 3);
-
-
         print();
-        //DijkstraAlgo(0, 3);
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
 
                 if (mode == Mode.ADD_NODE) {
-                    addNode(new Node(e.getX(),e.getY()));
+                    int a=0;
+                    addNode(e.getX(), e.getY(), "Node " + (nodes.size() + 1));
                     for (int i = 0; i < nodes.size(); i++) {
                         LinkedList<Node> list = new LinkedList<Node>();
                         list.add(nodes.get(i));
@@ -140,14 +125,30 @@ public class MapPanel extends JPanel {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (mode == Mode.SELECT_NODE) {
-                    draggedNode = null;
-                } else if (mode == Mode.CONNECT_NODE && draggedNode2 != null)  {
+                if (mode == Mode.CONNECT_NODE && draggedNode2 != null)  {
+                    List<Node> connections = connected.getOrDefault(draggedNode, new ArrayList<>());
+                    // if already connected
+                    if (connections.contains(draggedNode2)) {
+                        draggedNode = null;
+                        draggedNode2 = null;
+                        return;
+                    } else {
+                        connections.add(draggedNode2);
+                        connected.put(draggedNode, connections);
+                        List<Node> connections2 = connected.getOrDefault(draggedNode2, new ArrayList<>());
+                        connections2.add(draggedNode);
+                        connected.put(draggedNode2, connections2);
+                        connectNodes(draggedNode, draggedNode2);
+                    }
                     // Reset dragged nodes to null to unselect them after connecting
                     draggedNode = null;
                     draggedNode2 = null;
                 }
+                else if (mode == Mode.SELECT_NODE) {
+                    draggedNode = null;
+                }
             }
+
         };
 
         this.addMouseListener(mouseAdapter);
@@ -162,9 +163,23 @@ public class MapPanel extends JPanel {
         drawRoad(g);
     }
 
-    private void addNode(Node node) {
-        nodes.add(node);
+    public void addNode(int x, int y, String n) {
+        Node newNode = new Node(x, y, n);
+        nodes.add(newNode);
+        adjList.add(new LinkedList<>());
+        weightList.add(new LinkedList<>());
         repaint();
+    }
+
+    public void connectNodes(Node node1, Node node2) {
+        int i = nodes.indexOf(node1);
+        int j = nodes.indexOf(node2);
+        adjList.get(i).add(node2);
+        adjList.get(j).add(node1);
+
+        System.out.println("Connected " + node1.name + " to " + node2.name);
+
+        AddWeight(i, j);
     }
 
     private void deleteNode(Node node) {
@@ -181,58 +196,33 @@ public class MapPanel extends JPanel {
                 g2D.setColor(Color.BLUE); // Set color to blue if node is selected
             }
             g2D.fillOval(node.x, node.y, node.diameter, node.diameter);
+            g2D.setColor(Color.BLACK);
+            g2D.drawString(node.name, node.x, node.y);
+
         }
     }
 
-    private void drawRoad(Graphics g){
+    private void drawRoad(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setColor(Color.BLACK);
+        g2.setStroke(new BasicStroke(3));
 
-        if (draggedNode != null && draggedNode2 != null) {
-            Graphics2D g2 = (Graphics2D) g;
-            g2.setColor(Color.BLACK);
-            g2.setStroke(new BasicStroke(3));
-
-            Node node1 = draggedNode;
-            Node node2 = draggedNode2;
-            g2.drawLine(node1.x + node1.diameter / 2, node1.y + node1.diameter / 2, node2.x + node2.diameter / 2, node2.y + node2.diameter / 2);
+        for (Map.Entry<Node, List<Node>> entry : connected.entrySet()) {
+            Node node1 = entry.getKey();
+            for (Node node2 : entry.getValue()) {
+                g2.drawLine(node1.x + node1.diameter / 2, node1.y + node1.diameter / 2, node2.x + node2.diameter / 2, node2.y + node2.diameter / 2);
+            }
         }
 
-//        Node node1 = nodes.get(0);
-//        Node node2 = nodes.get(1);
-//        Node node3 = nodes.get(2);
-//        Node node4 = nodes.get(3);
-
-//        // Connect Node(0) to Node(1)
-//        g2.drawLine(node1.x + node1.diameter / 2, node1.y + node1.diameter / 2, node2.x + node2.diameter / 2, node2.y + node2.diameter / 2);
-//        // Connect Node(1) to Node(2)
-//        g2.drawLine(node2.x + node2.diameter / 2, node2.y + node2.diameter / 2, node3.x + node3.diameter / 2, node3.y + node3.diameter / 2);
-//        // Connect Node(2) to Node(3)
-//        g2.drawLine(node3.x + node3.diameter / 2, node3.y + node3.diameter / 2, node4.x + node4.diameter / 2, node4.y + node4.diameter / 2);
-//        // Connect Node(1) to Node(3)
-//        g2.drawLine(node2.x + node2.diameter / 2, node2.y + node2.diameter / 2, node4.x + node4.diameter / 2, node4.y + node4.diameter / 2);
-//
-//        System.out.println("Road 1: " + (int) Math.sqrt(Math.pow(node2.x - node1.x, 2) + Math.pow(node2.y - node1.y, 2)));
-//        System.out.println("Road 2: " + (int) Math.sqrt(Math.pow(node3.x - node2.x, 2) + Math.pow(node3.y - node2.y, 2)));
-//        System.out.println("Road 3: " + (int) Math.sqrt(Math.pow(node4.x - node3.x, 2) + Math.pow(node4.y - node3.y, 2)));
-//        System.out.println("Road 4: " + (int) Math.sqrt(Math.pow(node4.x - node2.x, 2) + Math.pow(node4.y - node2.y, 2)));
+        System.out.println("Weight: " + weightList);
+        print();
     }
-
-    // A, B, C, D, E
-//    public void AddWeight(int srcNode, int dstTo) {
-//        Node node1 = nodes.get(srcNode);
-//        Node node2 = nodes.get(dstTo);
-//        int weight = (int) Math.sqrt(Math.pow(node2.x - node1.x, 2) + Math.pow(node2.y - node1.y, 2));
-//
-//        LinkedList<Node> list = adjList.get(srcNode);
-//        list.add(node2);
-//
-//        LinkedList<Integer> weightList = this.weightList.get(srcNode);
-//        weightList.add(weight);
-//    }
 
     public void print() {
-        for (LinkedList<Node> list : adjList) {
-            for (Node node : list) {
-                System.out.print(node + " -> ");
+        for (Map.Entry<Node, List<Node>> entry : connected.entrySet()) {
+            System.out.print(entry.getKey().name + " -> ");
+            for (Node node : entry.getValue()) {
+                System.out.print(node.name + " ");
             }
             System.out.println();
         }
@@ -242,43 +232,70 @@ public class MapPanel extends JPanel {
         this.mode = mode;
     }
 
-//    public void DijkstraAlgo(int src, int dst){
-//        int[] dist = new int[nodes.size()];
-//        int[] prev = new int[nodes.size()];
-//        boolean[] visited = new boolean[nodes.size()];
-//
-//        for (int i=0;i<nodes.size();i++){
-//            dist[i] = Integer.MAX_VALUE;
-//            prev[i] = -1;
-//            visited[i] = false;
-//        }
-//
-//        dist[src] = 0;
-//        Queue<Integer> path = new LinkedList<>();
-//        path.add(src);
-//
-//        while (!path.isEmpty()) {
-//            int u = path.poll();
-//            visited[u] = true;
-//
-//            LinkedList<Node> list = adjList.get(u);
-//            LinkedList<Integer> weightList = this.weightList.get(u);
-//
-//            System.out.println(list.size());
-//            for (int i = 1; i < list.size(); i++) {
-//                int weight = weightList.get(i);
-//                Node node = list.get(i);
-//                int v = nodes.indexOf(node);
-//
-//
-//                if (!visited[v] && dist[v] > dist[u] + weight) {
-//                    dist[v] = dist[u] + weight;
-//                    prev[v] = u;
-//                    path.add(v);
-//                }
-//            }
-//        }
-//
-//        System.out.println("Shortest Path from " + src + " to " + dst + " is " + dist[dst]);
-//    }
+    public void AddWeight(int i, int j) {
+//        int weight = (int) Math.sqrt(Math.pow(nodes.get(i).x - nodes.get(j).x, 2) + Math.pow(nodes.get(i).y - nodes.get(j).y, 2));
+        // test case
+        int weight = new Random().nextInt(10)+1;
+        weightList.get(i).add(weight);
+        weightList.get(j).add(weight);
+    }
+
+    public void Dijkstra(int src, int dst) {
+        int n = nodes.size();
+        int[] dist = new int[n];
+        Node[] prev = new Node[n];
+
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        Arrays.fill(prev, null);
+
+        dist[src] = 0;
+
+        PriorityQueue<Node> queue = new PriorityQueue<>(Comparator.comparingInt(node -> dist[nodes.indexOf(node)]));
+        queue.add(nodes.get(src));
+
+        while (!queue.isEmpty()) {
+            Node u = queue.poll();
+            int uIndex = nodes.indexOf(u);
+
+            if (u == nodes.get(dst)) {
+                break;
+            }
+
+            for (Node v : adjList.get(uIndex)) {
+                int vIndex = nodes.indexOf(v);
+                int weightIndex = adjList.get(uIndex).indexOf(v);
+                if (weightIndex < weightList.get(uIndex).size()) {
+                    int altDist = dist[uIndex] + weightList.get(uIndex).get(weightIndex);
+
+                    if (altDist < dist[vIndex]) {
+                        dist[vIndex] = altDist;
+                        prev[vIndex] = u;
+
+                        // Remove the node from the queue and add it back to update its position
+                        queue.remove(v);
+                        queue.add(v);
+                    }
+                }
+            }
+        }
+
+        if (prev[dst] != null) {
+            LinkedList<Node> path = new LinkedList<>();
+            for (Node node = nodes.get(dst); node != null; node = prev[nodes.indexOf(node)]) {
+                path.addFirst(node);
+            }
+
+            System.out.println("Shortest path from " + nodes.get(src).name + " to " + nodes.get(dst).name + ":");
+            for (Node node : path) {
+                System.out.print(node.name + " ");
+            }
+            System.out.println("\nDistance: " + dist[dst]);
+        } else {
+            System.out.println("There is no path from " + nodes.get(src).name + " to " + nodes.get(dst).name);
+        }
+    }
+
+    public void metourmom(int start, int dist) {
+
+    }
 }
