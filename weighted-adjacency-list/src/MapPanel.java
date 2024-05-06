@@ -179,7 +179,29 @@ public class MapPanel extends JPanel {
     }
 
     private void deleteNode(Node node) {
+        int index = nodes.indexOf(node);
+        // Remove the node from the nodes list
         nodes.remove(node);
+        // Remove the node's adjacency list and weight list
+        adjList.remove(index);
+        weightList.remove(index);
+
+        // check all nodes and delete the connections if there are removed nodes.
+        for (int i = 0; i < nodes.size(); i++) {
+            int adjIndex = adjList.get(i).indexOf(node);
+            if (adjIndex != -1) {
+                adjList.get(i).remove(adjIndex);
+                weightList.get(i).remove(adjIndex);
+            }
+        }
+
+        // Remove the node from the connected map
+        connected.remove(node);
+        // Iterate over all remaining entries in the connected map and remove any connections to the deleted node
+        for (Map.Entry<Node, List<Node>> entry : connected.entrySet()) {
+            entry.getValue().remove(node);
+        }
+
         repaint();
     }
 
