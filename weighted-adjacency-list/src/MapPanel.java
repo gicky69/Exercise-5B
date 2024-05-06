@@ -53,15 +53,10 @@ public class MapPanel extends JPanel {
             public void mousePressed(MouseEvent e) {
 
                 if (mode == Mode.ADD_NODE) {
-                    int a=0;
                     addNode(e.getX(), e.getY(), "Node " + (nodes.size() + 1));
-                    for (int i = 0; i < nodes.size(); i++) {
-                        LinkedList<Node> list = new LinkedList<Node>();
-                        list.add(nodes.get(i));
-                        adjList.add(list);
-                        weightList.add(new LinkedList<Integer>());
-                    }
-
+                    LinkedList<Node> list = new LinkedList<Node>();
+                    adjList.add(list);
+                    weightList.add(new LinkedList<Integer>());
                 } else if (mode == Mode.SELECT_NODE) {
                     draggedNode2 = null;
                     if (draggedNode == null) {
@@ -180,6 +175,7 @@ public class MapPanel extends JPanel {
         System.out.println("Connected " + node1.name + " to " + node2.name);
 
         AddWeight(i, j);
+        AddWeight(j,i);
     }
 
     private void deleteNode(Node node) {
@@ -209,8 +205,27 @@ public class MapPanel extends JPanel {
 
         for (Map.Entry<Node, List<Node>> entry : connected.entrySet()) {
             Node node1 = entry.getKey();
+            int i = nodes.indexOf(node1);
             for (Node node2 : entry.getValue()) {
-                g2.drawLine(node1.x + node1.diameter / 2, node1.y + node1.diameter / 2, node2.x + node2.diameter / 2, node2.y + node2.diameter / 2);
+                int j = nodes.indexOf(node2);
+                if (i < j) {
+                    int x1 = node1.x + node1.diameter / 2;
+                    int y1 = node1.y + node1.diameter / 2;
+                    int x2 = node2.x + node2.diameter / 2;
+                    int y2 = node2.y + node2.diameter / 2;
+
+                    g2.drawLine(x1, y1, x2, y2);
+
+                    int weightIndex = adjList.get(i).indexOf(node2);
+                    if (weightIndex < weightList.get(i).size()) {
+                        int weight = weightList.get(i).get(weightIndex);
+                        String weightStr = Integer.toString(weight);
+
+                        int midX = (x1 + x2) / 2;
+                        int midY = (y1 + y2) / 2;
+                        g2.drawString(weightStr, midX, midY);
+                    }
+                }
             }
         }
 
@@ -232,15 +247,14 @@ public class MapPanel extends JPanel {
         this.mode = mode;
     }
 
+    // calculate the actual dist
     public void AddWeight(int i, int j) {
-//        int weight = (int) Math.sqrt(Math.pow(nodes.get(i).x - nodes.get(j).x, 2) + Math.pow(nodes.get(i).y - nodes.get(j).y, 2));
-        // test case
-        int weight = new Random().nextInt(10)+1;
+        int xDist = nodes.get(i).x - nodes.get(j).x;
+        int yDist = nodes.get(i).y - nodes.get(j).y;
+        int weight = (int) Math.sqrt(xDist * xDist + yDist * yDist);
         weightList.get(i).add(weight);
         weightList.get(j).add(weight);
     }
-
-
 
     // daming nangyari hahahahahahahahahahah ohmahgah
     public void Dijkstra(int src, int dst) {
@@ -266,6 +280,7 @@ public class MapPanel extends JPanel {
 
             for (Node v : adjList.get(uIndex)) {
                 int vIndex = nodes.indexOf(v);
+                System.out.println("Checking: " + u.name + " -> " + v.name);
                 int weightIndex = adjList.get(uIndex).indexOf(v);
                 if (weightIndex < weightList.get(uIndex).size()) {
                     int altDist = dist[uIndex] + weightList.get(uIndex).get(weightIndex);
@@ -288,7 +303,7 @@ public class MapPanel extends JPanel {
                 path.addFirst(node);
             }
 
-            System.out.println("Shortest path from " + nodes.get(src).name + " to " + nodes.get(dst).name + ":");
+            System.out.println("\n\nShortest path from " + nodes.get(src).name + " to " + nodes.get(dst).name + ":");
             for (Node node : path) {
                 System.out.print(node.name + " ");
             }
