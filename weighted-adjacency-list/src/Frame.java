@@ -71,7 +71,9 @@ public class Frame {
         Dijkstra.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mapPanel.Dijkstra(0, 5);
+                String start = JOptionPane.showInputDialog("Enter start node");
+                String end = JOptionPane.showInputDialog("Enter end node");
+                mapPanel.Dijkstra(Integer.parseInt(start), Integer.parseInt(end));
             }
         });
 
