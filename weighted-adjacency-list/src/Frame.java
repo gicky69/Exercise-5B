@@ -96,6 +96,10 @@ public class Frame {
             public void actionPerformed(ActionEvent e) {
                 String start = JOptionPane.showInputDialog("Enter start node");
                 String end = JOptionPane.showInputDialog("Enter end node");
+                mapPanel.clearWeights();
+
+                mapPanel.drawRoad(mapPanel.getGraphics());
+
                 mapPanel.Dijkstra(Integer.parseInt(start), Integer.parseInt(end));
             }
         });

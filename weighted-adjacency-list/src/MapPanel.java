@@ -258,7 +258,13 @@ public class MapPanel extends JPanel {
         }
     }
 
-    private void drawRoad(Graphics g) {
+    public void clearWeights() {
+        for (LinkedList<Integer> list : weightList) {
+            list.clear();
+        }
+    }
+
+    public void drawRoad(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.BLACK);
         g2.setStroke(new BasicStroke(3));
@@ -289,38 +295,35 @@ public class MapPanel extends JPanel {
                 g2.drawLine(centerX1, centerY1, centerX2, centerY2);
                 int distance = (int) Math.sqrt(Math.pow(centerX2 - centerX1, 2) + Math.pow(centerY2 - centerY1, 2));
 
+
                 // Calculate the position to draw the distance text
                 int textX = (centerX1 + centerX2) / 2;
                 int textY = (centerY1 + centerY2) / 2;
 
+                // Recalculate the weight
+                int weightIndex1 = adjList.get(i).indexOf(node2);
+                if (weightIndex1 < weightList.get(i).size()) {
+                    weightList.get(i).set(weightIndex1, distance);
+                } else {
+                    weightList.get(i).add(distance);
+                }
+
+                // Recalculate the weight for the reverse direction
+                int j = nodes.indexOf(node2);
+                int weightIndex2 = adjList.get(j).indexOf(node1);
+                if (weightIndex2 < weightList.get(j).size()) {
+                    weightList.get(j).set(weightIndex2, distance);
+                } else {
+                    weightList.get(j).add(distance);
+                }
 
                 g2.setColor(Color.black);
-                //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
                 g2.drawString(Integer.toString(distance), textX, textY);
-//                /*int j = nodes.indexOf(node2);
-                if (i < i) {
-                    int x1 = node1.x + node1.diameter / 2;
-                    int y1 = node1.y + node1.diameter / 2;
-                    int x2 = node2.x + node2.diameter / 2;
-                    int y2 = node2.y + node2.diameter / 2;
-
-                    g2.drawLine(x1, y1, x2, y2);
-
-                    int weightIndex = adjList.get(i).indexOf(node2);
-                    if (weightIndex < weightList.get(i).size()) {
-                        int weight = weightList.get(i).get(weightIndex);
-                        String weightStr = Integer.toString(weight);
-
-                        int midX = (x1 + x2) / 2;
-                        int midY = (y1 + y2) / 2;
-                        g2.drawString(weightStr, midX, midY);
-                    }
-                }
             }
         }
 
         System.out.println("Weight: " + weightList);
-        print();
+//        print();
     }
 
     public void print() {
