@@ -15,8 +15,8 @@ class Node {
     Node(int x, int y, String n) {
 
         //added 2 images for the node and selected node
-        yellowNode = new ImageIcon("weighted-adjacency-list/images/whiteduck-removebg-preview.png");
-        blueNode = new ImageIcon("weighted-adjacency-list/images/whiteduck-removebg-preview.png");
+        yellowNode = new ImageIcon("weighted-adjacency-list/images/whiteduck.png");
+        blueNode = new ImageIcon("weighted-adjacency-list/images/whiteduck.png");
 
         this.x = x;
         this.y = y;
