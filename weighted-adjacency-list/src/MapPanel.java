@@ -7,14 +7,24 @@ import java.util.List;
 
 class Node {
     int x, y, diameter;
+
     String name;
+    ImageIcon yellowNode, blueNode;
+
 
     Node(int x, int y, String n) {
+
+        //added 2 images for the node and selected node
+        yellowNode = new ImageIcon("weighted-adjacency-list/images/whiteduck.png");
+        blueNode = new ImageIcon("weighted-adjacency-list/images/whiteduck.png");
+
         this.x = x;
         this.y = y;
         this.diameter = 90;
         this.name = n;
     }
+
+
 
     public boolean isOver(Node node, int mx, int my) {
         int radius = node.diameter/2;
@@ -26,6 +36,8 @@ class Node {
 }
 
 public class MapPanel extends JPanel {
+
+    ImageIcon bgImage;
     ArrayList<Node> nodes = new ArrayList<>();
     ArrayList<LinkedList<Node>> adjList = new ArrayList<LinkedList<Node>>();
     ArrayList<LinkedList<Integer>> weightList = new ArrayList<LinkedList<Integer>>();
@@ -48,12 +60,20 @@ public class MapPanel extends JPanel {
 
         print();
 
+        try {
+            bgImage = new ImageIcon("weighted-adjacency-list/images/game.png");
+        } catch (Exception e) {
+            // Handle the exception: Log the error, use a placeholder image, etc.
+            System.err.println("Error loading background image: " + e.getMessage());
+            bgImage = new ImageIcon("path/to/placeholder.jpg"); // Replace with your placeholder image path (optional)
+        }
+
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
 
                 if (mode == Mode.ADD_NODE) {
-                    addNode(e.getX(), e.getY(), "Node " + (nodes.size() + 1));
+                    addNode(e.getX(), e.getY(), "Duck " + (nodes.size() + 1));
                     LinkedList<Node> list = new LinkedList<Node>();
                     adjList.add(list);
                     weightList.add(new LinkedList<Integer>());
@@ -154,10 +174,24 @@ public class MapPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        drawBackground(g);
         drawNodes(g);
         drawRoad(g);
     }
 
+    private void drawBackground(Graphics g){
+        if (bgImage != null) {
+            g.drawImage(bgImage.getImage(), 0, -50, null);
+        } else {
+            // Handle case if image couldn't be loaded (optional)
+            g.setColor(Color.gray);  // Use a light gray placeholder
+            g.fillRect(0, 0, getWidth(), getHeight());
+        }
+    }
+
+    private void drawNode(Graphics g){
+        Graphics2D g2d = (Graphics2D) g;
+    }
     public void addNode(int x, int y, String n) {
         Node newNode = new Node(x, y, n);
         nodes.add(newNode);
@@ -209,13 +243,17 @@ public class MapPanel extends JPanel {
         Graphics2D g2D = (Graphics2D) g;
         g2D.setColor(Color.RED);
         for (Node node : nodes) {
-            g2D.setColor(Color.RED); // Set color to red by default
-            if (node == draggedNode || node == draggedNode2) {
-                g2D.setColor(Color.BLUE); // Set color to blue if node is selected
-            }
-            g2D.fillOval(node.x, node.y, node.diameter, node.diameter);
+
+            //added node images:
+            g2D.drawImage(node.yellowNode.getImage(), node.x, node.y, node.diameter, node.diameter, null);
             g2D.setColor(Color.BLACK);
             g2D.drawString(node.name, node.x, node.y);
+
+            if (node == draggedNode || node == draggedNode2){
+                g2D.drawImage(node.blueNode.getImage(), node.x, node.y, node.diameter, node.diameter, null);
+                g2D.setColor(Color.black);
+                g2D.drawString(node.name, node.x, node.y);
+            }
 
         }
     }
@@ -225,12 +263,42 @@ public class MapPanel extends JPanel {
         g2.setColor(Color.BLACK);
         g2.setStroke(new BasicStroke(3));
 
+        //setting a larger font text for distance
+        Font currentFont = g2.getFont();
+        Font newFont = currentFont.deriveFont(currentFont.getSize() * 2.5F);
+        g2.setFont(newFont);
+
         for (Map.Entry<Node, List<Node>> entry : connected.entrySet()) {
             Node node1 = entry.getKey();
             int i = nodes.indexOf(node1);
             for (Node node2 : entry.getValue()) {
-                int j = nodes.indexOf(node2);
-                if (i < j) {
+
+                // showing the distance while dragging the connected nodes:
+                int centerX1 = node1.x + node1.diameter / 2;
+                int centerY1 = node1.y + node1.diameter / 2;
+                int centerX2 = node2.x + node2.diameter / 2;
+                int centerY2 = node2.y + node2.diameter / 2;
+
+                //Calculate the size of the roadNode image based on the distance between the connected nodes
+                int width = Math.abs(centerX2 - centerX1);
+                int height = Math.abs(centerY2 - centerY1);
+                int x = Math.min(centerX1, centerX2);
+                int y = Math.min(centerY1, centerY2);
+
+                //draw linesssss
+                g2.drawLine(centerX1, centerY1, centerX2, centerY2);
+                int distance = (int) Math.sqrt(Math.pow(centerX2 - centerX1, 2) + Math.pow(centerY2 - centerY1, 2));
+
+                // Calculate the position to draw the distance text
+                int textX = (centerX1 + centerX2) / 2;
+                int textY = (centerY1 + centerY2) / 2;
+
+
+                g2.setColor(Color.black);
+                //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                g2.drawString(Integer.toString(distance), textX, textY);
+//                /*int j = nodes.indexOf(node2);
+                if (i < i) {
                     int x1 = node1.x + node1.diameter / 2;
                     int y1 = node1.y + node1.diameter / 2;
                     int x2 = node2.x + node2.diameter / 2;
