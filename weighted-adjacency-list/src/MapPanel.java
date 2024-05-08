@@ -423,16 +423,6 @@ public class MapPanel extends JPanel {
             }
         }
 
-        public void metourmom(int start, int end) {
-            int n = nodes.size();
-            int[][] dist = new int[n][n];
-
-            // Initialize the distance matrix
-            for (int i = 0; i < n; i++) {
-                Arrays.fill(dist[i], Integer.MAX_VALUE);
-                dist[i][i] = 0;
-            }
-
             //// test/ /////
 //            // Fill the distance matrix with the weights of the edges
 //            for (int i = 0; i < n; i++) {
@@ -500,7 +490,7 @@ public class MapPanel extends JPanel {
 //            }
 //        }
 
-        System.out.println("Shortest distance from " + nodes.get(start).name + " to " + nodes.get(dist).name + ": " + dists[dist]);
+//        System.out.println("Shortest distance from " + nodes.get(start).name + " to " + nodes.get(dist).name + ": " + dists[dist]);
 
     }
 }
