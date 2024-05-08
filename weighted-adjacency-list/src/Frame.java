@@ -10,15 +10,37 @@ public class Frame {
     JMenu menu;
     JMenuItem addNode, connectNode, selectNode, deleteNode;
     JButton Dijkstra;
+    JButton MeToUrMom;
+    ImageIcon bgImage;
+    JLabel bgLabel;
 
+    JPanel bgPanel;
     public Frame() {
         JFrame frame = new JFrame("MAP");
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1280, 720);
+        frame.setSize(1920, 1080);
+        /*bgImage = new ImageIcon("weighted-adjacency-list/images/vector-road-top-view 1920x1344.jpg");
+        bgLabel = new JLabel();
+        bgLabel.setIcon(bgImage);
+        bgLabel.setBounds(0,0, 1920, 1344);*/
+
+        JPanel bgPanel = new JPanel();
+        bgPanel.setLayout(null);
+        bgPanel.setBounds(0, -50, 1920, 1080);
+
+
+        bgImage = new ImageIcon("weighted-adjacency-list/images/game.png");
+        JLabel bgLabel = new JLabel();
+        bgLabel.setIcon(bgImage);
+        bgPanel.add(bgLabel);
+        bgLabel.setBounds(0, -50, 1920, 1080);
 
         mapPanel = new MapPanel();
-        mapPanel.setBounds(0,0,1280,720);
+        mapPanel.setLayout(null);
+        mapPanel.setBounds(0,-50,1920,1080);
+        //mapPanel.add(bgLabel);
+
 
         // MENU BAR
         menuBar = new JMenuBar();
@@ -32,6 +54,10 @@ public class Frame {
         Dijkstra.setBounds(0, 0, 100, 50);
         Dijkstra.setVisible(true);
 
+        MeToUrMom = new JButton("MeToUrMom");
+        MeToUrMom.setBounds(0, 50, 100, 50);
+        MeToUrMom.setVisible(true);
+
 
         menu.add(addNode);
         menu.add(connectNode);
@@ -39,6 +65,8 @@ public class Frame {
         menu.add(deleteNode);
         menuBar.add(menu);
         frame.setJMenuBar(menuBar);
+
+
 
         addNode.addActionListener(new ActionListener() {
             @Override
@@ -71,13 +99,41 @@ public class Frame {
         Dijkstra.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mapPanel.Dijkstra(0, 5);
+                String start = JOptionPane.showInputDialog("Enter start node");
+                String end = JOptionPane.showInputDialog("Enter end node");
+                mapPanel.clearWeights();
+
+                mapPanel.drawRoad(mapPanel.getGraphics());
+
+                mapPanel.Dijkstra(Integer.parseInt(start), Integer.parseInt(end));
             }
         });
 
+        MeToUrMom.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String start = JOptionPane.showInputDialog("Enter start node");
+                String end = JOptionPane.showInputDialog("Enter end node");
+                mapPanel.clearWeights();
+
+                mapPanel.drawRoad(mapPanel.getGraphics());
+
+                mapPanel.metourmom(Integer.parseInt(start), Integer.parseInt(end));
+            }
+        });
+
+
+
         frame.add(Dijkstra);
+        frame.add(MeToUrMom);
+        //frame.add(bgLabel);
+        frame.add(bgPanel);
         frame.add(mapPanel);
+
+        //bgLabel.setVisible(true);
+        //mapPanel.add(imageLabel);
         frame.setVisible(true);
+
 
     }
 
