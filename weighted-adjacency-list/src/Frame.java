@@ -10,6 +10,7 @@ public class Frame {
     JMenu menu;
     JMenuItem addNode, connectNode, selectNode, deleteNode;
     JButton Dijkstra;
+    JButton MeToUrMom;
     ImageIcon bgImage;
     JLabel bgLabel;
 
@@ -52,6 +53,10 @@ public class Frame {
 
         Dijkstra.setBounds(0, 0, 100, 50);
         Dijkstra.setVisible(true);
+
+        MeToUrMom = new JButton("MeToUrMom");
+        MeToUrMom.setBounds(0, 50, 100, 50);
+        MeToUrMom.setVisible(true);
 
 
         menu.add(addNode);
@@ -104,7 +109,23 @@ public class Frame {
             }
         });
 
+        MeToUrMom.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String start = JOptionPane.showInputDialog("Enter start node");
+                String end = JOptionPane.showInputDialog("Enter end node");
+                mapPanel.clearWeights();
+
+                mapPanel.drawRoad(mapPanel.getGraphics());
+
+                mapPanel.metourmom(Integer.parseInt(start), Integer.parseInt(end));
+            }
+        });
+
+
+
         frame.add(Dijkstra);
+        frame.add(MeToUrMom);
         //frame.add(bgLabel);
         frame.add(bgPanel);
         frame.add(mapPanel);

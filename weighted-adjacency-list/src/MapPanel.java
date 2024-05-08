@@ -407,6 +407,100 @@ public class MapPanel extends JPanel {
     }
 
     public void metourmom(int start, int dist) {
+        // Turn into matrix
+        // Use a priority queue
+        // calculate using matrix
+
+        int n = nodes.size();
+
+        // Matrix or 2D array
+        int[][] matrix = new int[n][n];
+
+        // Initialize the matrix with max value
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                matrix[i][j] = Integer.MAX_VALUE;
+            }
+        }
+
+        public void metourmom(int start, int end) {
+            int n = nodes.size();
+            int[][] dist = new int[n][n];
+
+            // Initialize the distance matrix
+            for (int i = 0; i < n; i++) {
+                Arrays.fill(dist[i], Integer.MAX_VALUE);
+                dist[i][i] = 0;
+            }
+
+            //// test/ /////
+//            // Fill the distance matrix with the weights of the edges
+//            for (int i = 0; i < n; i++) {
+//                for (int j = 0; j < adjList.get(i).size(); j++) {
+//                    int index = nodes.indexOf(adjList.get(i).get(j));
+//                    dist[i][index] = weightList.get(i).get(j);
+//                }
+//            }
+//
+//            for (int k = 0; k < n; k++) {
+//                for (int i = 0; i < n; i++) {
+//                    for (int j = 0; j < n; j++) {
+//                        if (dist[i][k] != Integer.MAX_VALUE && dist[k][j] != Integer.MAX_VALUE
+//                                && dist[i][k] + dist[k][j] < dist[i][j]) {
+//                            dist[i][j] = dist[i][k] + dist[k][j];
+//                        }
+//                    }
+//                }
+//            }
+//
+//            // Print the shortest distance
+//            if (dist[start][end] != Integer.MAX_VALUE) {
+//                System.out.println("Shortest distance from " + nodes.get(start).name + " to " + nodes.get(end).name + ": " + dist[start][end]);
+//            } else {
+//                System.out.println("There is no path from " + nodes.get(start).name + " to " + nodes.get(end).name);
+//            }
+//        }
+
+//        for (int i = 0; i < n; i++) {
+//            for (int j = 0; j < n; j++) {
+//                matrix[i][j] = Integer.MAX_VALUE;
+//            }
+//        }
+//
+//        for (int i = 0; i < n; i++) {
+//            for (int j = 0; j < adjList.get(i).size(); j++) {
+//                int index = nodes.indexOf(adjList.get(i).get(j));
+//                matrix[i][index] = weightList.get(i).get(j);
+//            }
+//        }
+//
+//        int[] dists = new int[n];
+//
+//        Arrays.fill(dists, Integer.MAX_VALUE);
+//        dists[start] = 0;
+//
+//        PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.comparingInt(node -> dists[node]));
+//        pq.add(start);
+//
+//        while (!pq.isEmpty()) {
+//            int u = pq.poll();
+//
+//            if (u == dist) {
+//                break;
+//            }
+//
+//            for (int v = 0; v < n; v++) {
+//                if (matrix[u][v] != Integer.MAX_VALUE) {
+//                    int altDist = dists[u] + matrix[u][v];
+//                    if (altDist < dists[v]) {
+//                        dists[v] = altDist;
+//                        pq.add(v);
+//                    }
+//                }
+//            }
+//        }
+
+        System.out.println("Shortest distance from " + nodes.get(start).name + " to " + nodes.get(dist).name + ": " + dists[dist]);
 
     }
 }
