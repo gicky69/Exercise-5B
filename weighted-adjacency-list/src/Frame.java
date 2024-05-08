@@ -10,15 +10,36 @@ public class Frame {
     JMenu menu;
     JMenuItem addNode, connectNode, selectNode, deleteNode;
     JButton Dijkstra;
+    ImageIcon bgImage;
+    JLabel bgLabel;
 
+    JPanel bgPanel;
     public Frame() {
         JFrame frame = new JFrame("MAP");
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1280, 720);
+        frame.setSize(1920, 1080);
+        /*bgImage = new ImageIcon("weighted-adjacency-list/images/vector-road-top-view 1920x1344.jpg");
+        bgLabel = new JLabel();
+        bgLabel.setIcon(bgImage);
+        bgLabel.setBounds(0,0, 1920, 1344);*/
+
+        JPanel bgPanel = new JPanel();
+        bgPanel.setLayout(null);
+        bgPanel.setBounds(0, -50, 1920, 1080);
+
+
+        bgImage = new ImageIcon("weighted-adjacency-list/images/game.png");
+        JLabel bgLabel = new JLabel();
+        bgLabel.setIcon(bgImage);
+        bgPanel.add(bgLabel);
+        bgLabel.setBounds(0, -50, 1920, 1080);
 
         mapPanel = new MapPanel();
-        mapPanel.setBounds(0,0,1280,720);
+        mapPanel.setLayout(null);
+        mapPanel.setBounds(0,-50,1920,1080);
+        //mapPanel.add(bgLabel);
+
 
         // MENU BAR
         menuBar = new JMenuBar();
@@ -39,6 +60,8 @@ public class Frame {
         menu.add(deleteNode);
         menuBar.add(menu);
         frame.setJMenuBar(menuBar);
+
+
 
         addNode.addActionListener(new ActionListener() {
             @Override
@@ -78,8 +101,14 @@ public class Frame {
         });
 
         frame.add(Dijkstra);
+        //frame.add(bgLabel);
+        frame.add(bgPanel);
         frame.add(mapPanel);
+
+        //bgLabel.setVisible(true);
+        //mapPanel.add(imageLabel);
         frame.setVisible(true);
+
 
     }
 
