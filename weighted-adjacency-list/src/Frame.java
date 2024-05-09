@@ -61,7 +61,7 @@ public class Frame {
         Dijkstra.setVisible(true);
 
         MeToUrMom = new JButton("MeToUrMom");
-        MeToUrMom.setBounds(200, 0, 100, 50);
+        MeToUrMom.setBounds(200, 0, 120, 66);
         MeToUrMom.setVisible(false);
 
 
