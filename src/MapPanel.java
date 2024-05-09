@@ -9,6 +9,7 @@ public class MapPanel {
     Main MainFrame;
 
 
+
     public MapPanel(int width,int height, Main mainFrame){
         this.MainFrame = mainFrame;
         MapPanel = new JPanel() {

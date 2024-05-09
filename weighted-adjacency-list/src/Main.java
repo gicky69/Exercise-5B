@@ -8,6 +8,7 @@ public class Main{
     public Main() {
         MF = new Frame();
         MP = new MapPanel();
+        // checker
     }
 
     public static void main(String[] args) {

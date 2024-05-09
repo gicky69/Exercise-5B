@@ -39,10 +39,12 @@ public class MapPanel extends JPanel {
     ArrayList<LinkedList<Node>> adjList = new ArrayList<LinkedList<Node>>();
     ArrayList<LinkedList<Integer>> weightList = new ArrayList<LinkedList<Integer>>();
     Map<Node, List<Node>> connected = new HashMap<>();
+    List<Node> shortestPath = new ArrayList<>();
 
     // store shortest path in an array to highlight in different color.
-    List<Node> shortestPath = new ArrayList<>();
     boolean isShortest = false;
+
+    JLabel DijkstrabUtton;
 
     Node draggedNode = null;
     Node draggedNode2 = null;
@@ -181,6 +183,7 @@ public class MapPanel extends JPanel {
         drawBackground(g);
         drawNodes(g);
         drawRoad(g);
+
     }
 
     private void drawBackground(Graphics g){
@@ -345,6 +348,9 @@ public class MapPanel extends JPanel {
 //        print();
     }
 
+
+
+
     public void print() {
         for (Map.Entry<Node, List<Node>> entry : connected.entrySet()) {
             System.out.print(entry.getKey().name + " -> ");
@@ -369,10 +375,12 @@ public class MapPanel extends JPanel {
     }
 
     // daming nangyari hahahahahahahahahahah ohmahgah
+
     public void Dijkstra(int src, int dst) {
         int n = nodes.size();
         int[] dist = new int[n];
         Node[] prev = new Node[n];
+
 
         Arrays.fill(dist, Integer.MAX_VALUE);
         Arrays.fill(prev, null);
@@ -417,6 +425,8 @@ public class MapPanel extends JPanel {
             isShortest = true;
             shortestPath = path;
             repaint();
+
+            shortestPath = path;
 
             System.out.println("\n\nShortest path from " + nodes.get(src).name + " to " + nodes.get(dst).name + ":");
             for (Node node : path) {

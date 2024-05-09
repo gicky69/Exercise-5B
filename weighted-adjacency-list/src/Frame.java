@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Map;
 
 public class Frame {
@@ -9,7 +11,8 @@ public class Frame {
     JMenuBar menuBar;
     JMenu menu;
     JMenuItem addNode, connectNode, selectNode, deleteNode;
-    JButton Dijkstra;
+    JLabel Dijkstra;
+    ImageIcon DijkstraButton, DijkstraButtonEntered;
     JButton MeToUrMom;
     ImageIcon bgImage;
     JLabel bgLabel;
@@ -49,14 +52,17 @@ public class Frame {
         connectNode = new JMenuItem("Connect Node");
         selectNode = new JMenuItem("Select Node");
         deleteNode = new JMenuItem("Delete Node");
-        Dijkstra = new JButton("Dijkstra");
 
-        Dijkstra.setBounds(0, 0, 100, 50);
+        DijkstraButton = new ImageIcon("weighted-adjacency-list/images/START no bg 120x66.png");
+        Dijkstra = new JLabel();
+        Dijkstra.setIcon(DijkstraButton);
+
+        Dijkstra.setBounds(0, 5, 120, 66);
         Dijkstra.setVisible(true);
 
         MeToUrMom = new JButton("MeToUrMom");
-        MeToUrMom.setBounds(0, 50, 100, 50);
-        MeToUrMom.setVisible(true);
+        MeToUrMom.setBounds(200, 0, 120, 66);
+        MeToUrMom.setVisible(false);
 
 
         menu.add(addNode);
@@ -96,7 +102,43 @@ public class Frame {
             }
         });
 
-        Dijkstra.addActionListener(new ActionListener() {
+        Dijkstra.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String start = JOptionPane.showInputDialog("Enter start node");
+                String end = JOptionPane.showInputDialog("Enter end node");
+                mapPanel.clearWeights();
+
+                mapPanel.drawRoad(mapPanel.getGraphics());
+
+                mapPanel.Dijkstra(Integer.parseInt(start), Integer.parseInt(end));
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+                DijkstraButtonEntered = new ImageIcon("weighted-adjacency-list/images/START no bg entered 120x66.png");
+                Dijkstra.setIcon(DijkstraButtonEntered);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                Dijkstra.setIcon(DijkstraButton);
+
+            }
+        });
+        /*Dijkstra.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String start = JOptionPane.showInputDialog("Enter start node");
@@ -107,7 +149,7 @@ public class Frame {
 
                 mapPanel.Dijkstra(Integer.parseInt(start), Integer.parseInt(end));
             }
-        });
+        });*/
 
         MeToUrMom.addActionListener(new ActionListener() {
             @Override
