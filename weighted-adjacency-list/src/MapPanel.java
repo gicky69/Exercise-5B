@@ -23,8 +23,6 @@ class Node {
         this.name = n;
     }
 
-
-
     public boolean isOver(Node node, int mx, int my) {
         int radius = node.diameter/2;
         int centerX = node.x + radius;
@@ -74,6 +72,7 @@ public class MapPanel extends JPanel {
         }
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
+
             @Override
             public void mousePressed(MouseEvent e) {
 
@@ -245,6 +244,11 @@ public class MapPanel extends JPanel {
             entry.getValue().remove(node);
         }
 
+        // Fix names of the nodes when a node is deleted
+        for (int i = 0; i < nodes.size(); i++) {
+            nodes.get(i).name = "Duck " + (i + 1);
+        }
+
         repaint();
     }
 
@@ -262,6 +266,7 @@ public class MapPanel extends JPanel {
                 g2D.drawImage(node.blueNode.getImage(), node.x, node.y, node.diameter, node.diameter, null);
                 g2D.setColor(Color.black);
                 g2D.drawString(node.name, node.x, node.y);
+                repaint();
             }
 
         }
@@ -432,6 +437,8 @@ public class MapPanel extends JPanel {
             System.out.println("There is no path from " + nodes.get(src).name + " to " + nodes.get(dst).name);
         }
     }
+
+
 
     public void metourmom(int start, int dist) {
         // Turn into matrix
