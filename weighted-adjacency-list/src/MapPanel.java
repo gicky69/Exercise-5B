@@ -43,6 +43,10 @@ public class MapPanel extends JPanel {
     ArrayList<LinkedList<Integer>> weightList = new ArrayList<LinkedList<Integer>>();
     Map<Node, List<Node>> connected = new HashMap<>();
 
+    // store shortest path in an array to highlight in different color.
+    List<Node> shortestPath = new ArrayList<>();
+    boolean isShortest = false;
+
     Node draggedNode = null;
     Node draggedNode2 = null;
     Mode mode = Mode.ADD_NODE;
@@ -77,6 +81,7 @@ public class MapPanel extends JPanel {
                     LinkedList<Node> list = new LinkedList<Node>();
                     adjList.add(list);
                     weightList.add(new LinkedList<Integer>());
+                    draggedNode = null;
                 } else if (mode == Mode.SELECT_NODE) {
                     draggedNode2 = null;
                     if (draggedNode == null) {
@@ -110,6 +115,7 @@ public class MapPanel extends JPanel {
                     for (Node node : nodes) {
                         if (node.isOver(node, e.getX(), e.getY())) {
                             deleteNode(node);
+                            draggedNode2 = null;
                             break;
                         }
                     }
@@ -204,6 +210,7 @@ public class MapPanel extends JPanel {
         int i = nodes.indexOf(node1);
         int j = nodes.indexOf(node2);
         adjList.get(i).add(node2);
+        adjList.get(i).add(node2);
         adjList.get(j).add(node1);
 
         System.out.println("Connected " + node1.name + " to " + node2.name);
@@ -285,16 +292,24 @@ public class MapPanel extends JPanel {
                 int centerX2 = node2.x + node2.diameter / 2;
                 int centerY2 = node2.y + node2.diameter / 2;
 
-                //Calculate the size of the roadNode image based on the distance between the connected nodes
-                int width = Math.abs(centerX2 - centerX1);
-                int height = Math.abs(centerY2 - centerY1);
-                int x = Math.min(centerX1, centerX2);
-                int y = Math.min(centerY1, centerY2);
+//                //Calculate the size of the roadNode image based on the distance between the connected nodes
+//                int width = Math.abs(centerX2 - centerX1);
+//                int height = Math.abs(centerY2 - centerY1);
+//                int x = Math.min(centerX1, centerX2);
+//                int y = Math.min(centerY1, centerY2);
 
-                //draw linesssss
+                //draw lines
                 g2.drawLine(centerX1, centerY1, centerX2, centerY2);
                 int distance = (int) Math.sqrt(Math.pow(centerX2 - centerX1, 2) + Math.pow(centerY2 - centerY1, 2));
 
+                // Check if the road is part of the shortest path
+                if (isShortest && shortestPath.contains(node1) && shortestPath.contains(node2)) {
+                    g2.setColor(Color.RED);
+                } else {
+                    g2.setColor(Color.BLACK);
+                }
+
+                g2.drawLine(centerX1, centerY1, centerX2, centerY2);
 
                 // Calculate the position to draw the distance text
                 int textX = (centerX1 + centerX2) / 2;
@@ -395,6 +410,9 @@ public class MapPanel extends JPanel {
             for (Node node = nodes.get(dst); node != null; node = prev[nodes.indexOf(node)]) {
                 path.addFirst(node);
             }
+            isShortest = true;
+            shortestPath = path;
+            repaint();
 
             System.out.println("\n\nShortest path from " + nodes.get(src).name + " to " + nodes.get(dst).name + ":");
             for (Node node : path) {
