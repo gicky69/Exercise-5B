@@ -3,6 +3,8 @@ public class Main{
     Frame MF;
     MapPanel MP;
 
+
+
     public Main() {
         MF = new Frame();
         MP = new MapPanel();
