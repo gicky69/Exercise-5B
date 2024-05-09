@@ -11,7 +11,6 @@ class Node {
     String name;
     ImageIcon yellowNode, blueNode;
 
-
     Node(int x, int y, String n) {
 
         //added 2 images for the node and selected node
@@ -23,8 +22,6 @@ class Node {
         this.diameter = 90;
         this.name = n;
     }
-
-
 
     public boolean isOver(Node node, int mx, int my) {
         int radius = node.diameter/2;
@@ -73,6 +70,7 @@ public class MapPanel extends JPanel {
         }
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
+
             @Override
             public void mousePressed(MouseEvent e) {
 
@@ -260,6 +258,7 @@ public class MapPanel extends JPanel {
                 g2D.drawImage(node.blueNode.getImage(), node.x, node.y, node.diameter, node.diameter, null);
                 g2D.setColor(Color.black);
                 g2D.drawString(node.name, node.x, node.y);
+                repaint();
             }
 
         }
@@ -423,6 +422,8 @@ public class MapPanel extends JPanel {
             System.out.println("There is no path from " + nodes.get(src).name + " to " + nodes.get(dst).name);
         }
     }
+
+
 
     public void metourmom(int start, int dist) {
         // Turn into matrix
