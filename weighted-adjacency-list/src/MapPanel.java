@@ -241,6 +241,11 @@ public class MapPanel extends JPanel {
             entry.getValue().remove(node);
         }
 
+        // Fix names of the nodes when a node is deleted
+        for (int i = 0; i < nodes.size(); i++) {
+            nodes.get(i).name = "Duck " + (i + 1);
+        }
+
         repaint();
     }
 
